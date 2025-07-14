@@ -27,10 +27,10 @@ class Settings(BaseSettings):
         "http://127.0.0.1:3000",
         "http://127.0.0.1:3001",
         "http://127.0.0.1:3002",
-        # Windows bilgisayar IP'nizi buraya ekleyin
-        "http://YOUR_WINDOWS_IP:3000",
-        "http://YOUR_WINDOWS_IP:3001",
-        "http://YOUR_WINDOWS_IP:3002",
+        # Windows bilgisayar IP'si (10.106.0.6)
+        "http://10.106.0.6:3000",
+        "http://10.106.0.6:3001",
+        "http://10.106.0.6:3002",
         # Geliştirme için tüm origin'lere izin (production'da kaldırın)
         "*"
     ]
