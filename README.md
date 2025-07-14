@@ -1,13 +1,13 @@
 # MikroTik API Yönetim Sistemi
 
-400 MikroTik cihazını web üzerinden yönetebileceğiniz kapsamlı RouterOS API sistemi.
+149 MikroTik cihazını web üzerinden yönetebileceğiniz kapsamlı RouterOS API sistemi.
 
 ## 🚀 Özellikler
 
 ### Backend (Python FastAPI)
 - **Yüksek Performans**: 400 cihaza eş zamanlı bağlantı desteği
 - **RouterOS API**: Librouteros ile güvenli bağlantı
-- **MySQL Veritabanı**: Cihaz bilgileri ve log kayıtları
+- **SQLite Veritabanı**: Hızlı ve kolay cihaz bilgileri yönetimi
 - **WebSocket**: Real-time durum güncellemeleri
 - **Async İşlemler**: Paralel cihaz yönetimi
 - **Connection Pool**: Verimli bağlantı yönetimi
@@ -24,8 +24,7 @@
 
 ### Backend
 - Python 3.8+
-- MySQL 5.7+
-- Redis (WebSocket cache için)
+- SQLite (built-in)
 
 ### Frontend
 - Node.js 16+
@@ -46,15 +45,12 @@ pip install -r requirements.txt
 ```
 
 ### 3. Veritabanı Yapılandırması
-Backend klasöründe `.env` dosyası oluşturun:
+SQLite otomatik olarak oluşturulur. Veritabanı dosyası: `backend/mikrotik_devices.db`
+
+Backend klasöründe isteğe bağlı `.env` dosyası:
 ```env
-DATABASE_URL=mysql+pymysql://radius:Zkngnr81.@dbmaster.trasst.com:3306/mikrotik
-DATABASE_HOST=dbmaster.trasst.com
-DATABASE_PORT=3306
-DATABASE_NAME=mikrotik
-DATABASE_USER=radius
-DATABASE_PASSWORD=Zkngnr81.
 SECRET_KEY=your-secret-key-here
+DEBUG=True
 ```
 
 ### 4. Frontend Kurulumu
@@ -95,6 +91,22 @@ npm start
 - `POST /api/v1/mikrotik/devices/{id}/execute` - Komut çalıştırma
 - `GET /api/v1/mikrotik/devices/{id}/reboot` - Yeniden başlatma
 
+### Grup Yönetimi
+- `GET /api/v1/mikrotik/groups` - Grup listesi
+- `POST /api/v1/mikrotik/groups` - Yeni grup
+- `PUT /api/v1/mikrotik/groups/{id}` - Grup güncelleme
+- `DELETE /api/v1/mikrotik/groups/{id}` - Grup silme
+
+### Subnet Yönetimi
+- `GET /api/v1/mikrotik/subnets` - Subnet listesi
+- `POST /api/v1/mikrotik/subnets` - Yeni subnet
+- `PUT /api/v1/mikrotik/subnets/{id}` - Subnet güncelleme
+- `DELETE /api/v1/mikrotik/subnets/{id}` - Subnet silme
+
+### Cihaz Tarama
+- `POST /api/v1/mikrotik/groups/{id}/scan` - Grup subnet taraması
+- `POST /api/v1/mikrotik/groups/{id}/register-devices` - Bulunan cihazları kaydet
+
 ### İstatistikler
 - `GET /api/v1/mikrotik/stats` - Genel istatistikler
 
@@ -102,7 +114,7 @@ npm start
 
 ### Backend Ayarları
 `backend/app/core/config.py` dosyasında:
-- Veritabanı bağlantı ayarları
+- SQLite database path
 - MikroTik bağlantı limitleri
 - WebSocket konfigürasyonu
 
@@ -123,7 +135,8 @@ mikrotikapi/
 │   │   ├── schemas/            # Pydantic şemaları
 │   │   ├── services/           # İş mantığı
 │   │   └── main.py            # FastAPI uygulaması
-│   └── requirements.txt
+│   ├── requirements.txt
+│   └── mikrotik_devices.db    # SQLite veritabanı
 ├── frontend/
 │   ├── src/
 │   │   ├── components/         # React bileşenleri
@@ -153,9 +166,19 @@ mikrotikapi/
 - Log kayıtları
 - Komut çalıştırma
 
+### 4. Grup Yönetimi
+- Cihazları gruplara ayırma
+- Subnet ilişkilendirme
+- Grup bazlı tarama
+
+### 5. Subnet Yönetimi
+- IP aralıkları tanımlama
+- Grup ilişkilendirme
+- Otomatik cihaz keşfi
+
 ## 🔒 Güvenlik
 
-- **Şifreleme**: Veritabanı bağlantıları şifreli
+- **Local SQLite**: Güvenli yerel veritabanı
 - **Validation**: Giriş doğrulaması
 - **Rate Limiting**: Aşırı yük koruması
 - **Error Handling**: Güvenli hata yönetimi
@@ -165,17 +188,18 @@ mikrotikapi/
 - **Eş zamanlı bağlantı**: 400 cihaz desteği
 - **Connection Pool**: Verimli kaynak kullanımı
 - **Async Processing**: Paralel işlem desteği
-- **Caching**: Redis ile hızlı erişim
+- **SQLite**: Hızlı yerel veritabanı
 
 ## 🐛 Sorun Giderme
 
-### Veritabanı Bağlantı Hatası
+### Veritabanı Hatası
 ```bash
-# MySQL servisini kontrol edin
-systemctl status mysql
+# Veritabanı dosyasını kontrol edin
+ls -la backend/mikrotik_devices.db
 
-# Bağlantı testini yapın
-mysql -h dbmaster.trasst.com -P 3306 -u radius -p mikrotik
+# Yeni veritabanı oluşturmak için
+rm backend/mikrotik_devices.db
+# Backend'i yeniden başlatın
 ```
 
 ### RouterOS Bağlantı Hatası
@@ -198,12 +222,7 @@ mysql -h dbmaster.trasst.com -P 3306 -u radius -p mikrotik
 
 ### Veritabanı Değişiklikleri
 ```python
-# Yeni model ekleyin
-class NewModel(Base):
-    __tablename__ = "new_table"
-    # fields...
-
-# Veritabanını güncelleyin
+# SQLite otomatik olarak şema değişikliklerini uygular
 from app.core.database import init_db
 init_db()
 ```

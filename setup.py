@@ -67,22 +67,20 @@ def setup_backend():
     # Create .env file if it doesn't exist
     env_file = backend_dir / ".env"
     if not env_file.exists():
-        env_content = """DATABASE_URL=mysql+pymysql://radius:Zkngnr81.@dbmaster.trasst.com:3306/mikrotik
-DATABASE_HOST=dbmaster.trasst.com
-DATABASE_PORT=3306
-DATABASE_NAME=mikrotik
-DATABASE_USER=radius
-DATABASE_PASSWORD=Zkngnr81.
+        env_content = """# SQLite Database - otomatik olarak oluşturulur
+DATABASE_URL=sqlite:///./mikrotik_devices.db
 
+# Security
 SECRET_KEY=your-secret-key-here-change-in-production
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 
-REDIS_URL=redis://localhost:6379
+# Debug mode
+DEBUG=True
 """
         with open(env_file, 'w') as f:
             f.write(env_content)
-        print("✅ .env dosyası oluşturuldu")
+        print("✅ .env dosyası oluşturuldu (SQLite konfigürasyonu)")
     
     print("✅ Backend kurulumu tamamlandı")
     return True
