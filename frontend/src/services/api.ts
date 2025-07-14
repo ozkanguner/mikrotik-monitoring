@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { MikrotikDeviceCreate, MikrotikDeviceUpdate } from '../types/mikrotik';
-
-const API_BASE_URL = 'http://localhost:8000/api/v1';
+import { API_BASE_URL } from '../config';
 
 const api = axios.create({
   baseURL: API_BASE_URL,

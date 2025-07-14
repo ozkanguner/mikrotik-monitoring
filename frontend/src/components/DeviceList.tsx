@@ -39,6 +39,7 @@ import { useSnackbar } from 'notistack';
 import { mikrotikApi } from '../services/api';
 import { MikrotikDevice, DeviceFilters } from '../types/mikrotik';
 import { useWebSocket } from '../hooks/useWebSocket';
+import { WS_URL } from '../config';
 
 
 export const DeviceList: React.FC = () => {
@@ -79,7 +80,7 @@ export const DeviceList: React.FC = () => {
   const queryClient = useQueryClient();
 
   const { isConnected } = useWebSocket({
-    url: 'ws://localhost:8000/ws',
+    url: WS_URL,
     onMessage: (message: any) => {
       if (message.type === 'device_status') {
         // Refresh devices when status changes

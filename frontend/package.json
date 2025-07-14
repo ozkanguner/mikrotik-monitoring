@@ -57,6 +57,5 @@
   "devDependencies": {
     "@types/react-router-dom": "^5.3.3",
     "eslint": "^8.36.0"
-  },
-  "proxy": "http://localhost:8000"
+  }
 } 

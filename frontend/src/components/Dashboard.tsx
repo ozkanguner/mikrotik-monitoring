@@ -22,12 +22,14 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { useWebSocket } from '../hooks/useWebSocket';
 import { mikrotikApi } from '../services/api';
 import { DeviceStats, WebSocketMessage } from '../types/mikrotik';
+import { WS_URL } from '../config';
+
 const Dashboard: React.FC = () => {
   const [stats, setStats] = useState<DeviceStats | null>(null);
   const [loading, setLoading] = useState(true);
 
   const { isConnected } = useWebSocket({
-    url: 'ws://localhost:8000/ws',
+    url: WS_URL,
     onMessage: (message: WebSocketMessage) => {
       if (message.type === 'device_status') {
         // Update stats when device status changes
@@ -55,8 +57,6 @@ const Dashboard: React.FC = () => {
     fetchStats();
   }, []);
 
-
-
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
@@ -65,8 +65,6 @@ const Dashboard: React.FC = () => {
     );
   }
 
-
-
   if (!stats) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
@@ -74,8 +72,6 @@ const Dashboard: React.FC = () => {
       </Box>
     );
   }
-
-
 
   const groupData = Object.entries(stats.groups).map(([group, count]) => ({
     name: group,

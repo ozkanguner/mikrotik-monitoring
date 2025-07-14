@@ -19,14 +19,20 @@ class Settings(BaseSettings):
     VERSION: str = "1.0.0"
     DEBUG: bool = os.getenv("DEBUG", "True").lower() == "true"
     
-    # CORS
+    # CORS - Windows bilgisayarından erişim için
     ALLOWED_ORIGINS: list = [
         "http://localhost:3000",
-        "http://localhost:3001",
+        "http://localhost:3001", 
         "http://localhost:3002",
         "http://127.0.0.1:3000",
         "http://127.0.0.1:3001",
         "http://127.0.0.1:3002",
+        # Windows bilgisayar IP'nizi buraya ekleyin
+        "http://YOUR_WINDOWS_IP:3000",
+        "http://YOUR_WINDOWS_IP:3001",
+        "http://YOUR_WINDOWS_IP:3002",
+        # Geliştirme için tüm origin'lere izin (production'da kaldırın)
+        "*"
     ]
     
     # MikroTik
